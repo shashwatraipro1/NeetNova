@@ -1408,53 +1408,27 @@ function setPomoMode(mode,mins){
   document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
   document.getElementById('pomo-mode-lbl').textContent=mode==='focus'?'Focus':mode==='short'?'Short Break':'Long Break';
   renderPomo();
-let pomoEndTimestamp = 0;
+}
 
 function togglePomo(){
   if(pomo.run){
-    clearInterval(pomo.int);
-    pomo.run=false;
+    clearInterval(pomo.int);pomo.run=false;
     document.getElementById('pomo-play-btn').innerHTML='▶ Resume';
     document.getElementById('pomo-play-btn').style.background='';
   } else {
     pomo.run=true;
-
-    pomoEndTimestamp = Date.now() + (pomo.left * 1000);
-
     document.getElementById('pomo-play-btn').innerHTML='⏸ Pause';
     document.getElementById('pomo-play-btn').style.background='#7c3aed';
-
     pomo.int=setInterval(()=>{
-      const remaining = Math.max(0, Math.floor((pomoEndTimestamp - Date.now())/1000));
-
-      pomo.left = remaining;
-
-      if(pomo.mode==='focus'){
-        pomo.focusMin = Math.floor((pomo.total-pomo.left)/60);
-      }
-
+      pomo.left--;
+      if(pomo.mode==='focus') pomo.focusMin=Math.floor((pomo.total-pomo.left)/60);
       if(pomo.left<=0){
-        clearInterval(pomo.int);
-        pomo.run=false;
-
-        if(pomo.mode==='focus'){
-          pomo.sessions++;
-          if(pomo.sessions>bestPomo){
-            bestPomo=pomo.sessions;
-            save('best-pomo',bestPomo);
-          }
-          updatePomoDots();
-        }
-
+        clearInterval(pomo.int);pomo.run=false;
+        if(pomo.mode==='focus'){pomo.sessions++;if(pomo.sessions>bestPomo){bestPomo=pomo.sessions;save('best-pomo',bestPomo);}updatePomoDots();}
         document.getElementById('pomo-play-btn').innerHTML='▶ Start';
         pomo.left=pomo.total;
+        try{new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA==').play();}catch(e){}
       }
-
-      renderPomo();
-      updateStats();
-    },250);
-  }
-}
       renderPomo();
       document.getElementById('ti-sessions').textContent=pomo.sessions;
       document.getElementById('ti-focus').textContent=pomo.focusMin+'m';
@@ -1490,47 +1464,23 @@ function setSwType(type, btn){
   document.getElementById('sw-current-type').textContent=labels[type];
 }
 
-let swStartTimestamp = 0;
-let swLastTick = 0;
-
 function toggleSW(){
   if(sw.run){
-    clearInterval(sw.int);
-    sw.run = false;
+    clearInterval(sw.int);sw.run=false;
     document.getElementById('sw-start-btn').textContent='▶ Resume';
     document.getElementById('sw-start-btn').style.background='';
   } else {
-    sw.run = true;
-    swStartTimestamp = Date.now() - (sw.elapsed * 1000);
-    swLastTick = Date.now();
-
+    sw.run=true;
     document.getElementById('sw-start-btn').textContent='⏸ Pause';
     document.getElementById('sw-start-btn').style.background='rgba(6,182,212,0.18)';
-
-    sw.int = setInterval(()=>{
-      const now = Date.now();
-
-      sw.elapsed = Math.floor((now - swStartTimestamp)/1000);
-
-      const delta = Math.floor((now - swLastTick)/1000);
-      if(delta > 0){
-        sw.typeElapsed[swType] = (sw.typeElapsed[swType]||0) + delta;
-        swLastTick = now;
-      }
-
-      save('sw-type-elapsed', sw.typeElapsed);
-
-      if(sw.elapsed > sw.best){
-        sw.best = sw.elapsed;
-        save('best-sw', sw.best);
-      }
-
-      renderSW();
-      updateSwTypeTotals();
-      updateStats();
-    }, 250);
+    sw.int=setInterval(()=>{
+      sw.elapsed++;
+      sw.typeElapsed[swType]=(sw.typeElapsed[swType]||0)+1;
+      save('sw-type-elapsed',sw.typeElapsed);
+      if(sw.elapsed>sw.best){sw.best=sw.elapsed;save('best-sw',sw.best);}
+      renderSW();updateSwTypeTotals();updateStats();
+    },1000);
   }
-}
 }
 
 function lapSW(){

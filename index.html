@@ -1473,19 +1473,15 @@ function toggleSW(){
     sw.run=true;
     document.getElementById('sw-start-btn').textContent='⏸ Pause';
     document.getElementById('sw-start-btn').style.background='rgba(6,182,212,0.18)';
-   const swStart = Date.now() - (sw.elapsed * 1000);
-let swPrev = Date.now();
-
-sw.int=setInterval(()=>{
-  const now = Date.now();
-
-  sw.elapsed = Math.floor((now - swStart) / 1000);
-
-  const delta = Math.floor((now - swPrev) / 1000);
-  if(delta > 0){
-    sw.typeElapsed[swType] = (sw.typeElapsed[swType] || 0) + delta;
-    swPrev = now;
+    sw.int=setInterval(()=>{
+      sw.elapsed++;
+      sw.typeElapsed[swType]=(sw.typeElapsed[swType]||0)+1;
+      save('sw-type-elapsed',sw.typeElapsed);
+      if(sw.elapsed>sw.best){sw.best=sw.elapsed;save('best-sw',sw.best);}
+      renderSW();updateSwTypeTotals();updateStats();
+    },1000);
   }
+}
 
 function lapSW(){
   if(sw.elapsed===0) return;

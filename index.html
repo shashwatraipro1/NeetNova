@@ -1880,6 +1880,39 @@ function renderSRList(){
 
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Render tasks everywhere
+  renderTaskList();
+  renderAllTasks();
+  updateDailyBadge();
+
+  // Render planners
+  phyRender();
+  chemRender();
+  bioRender();
+
+  // Render notes if function exists
+  if (typeof renderNotes === 'function') renderNotes();
+
+  // Calendar / analytics / stats
+  renderCalendar();
+  renderAnalytics();
+  updateStats();
+
+  // Load today's saved log data
+  loadDayData(todayStr());
+
+  // Stopwatch / timer visuals
+  renderSwSessionsLog();
+  updateSwTypeTotals();
+  updateBests();
+
+  // Build strips
+  buildDateStrip();
+  buildDailyDateStrip();
+});
+
 // ═══════════════════════════════════════════
 // BOOT
 // ═══════════════════════════════════════════

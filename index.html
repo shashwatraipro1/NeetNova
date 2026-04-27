@@ -15,7 +15,13 @@ body{font-family:'Syne',sans-serif;background:#05080f;color:#e8eaf0;font-size:14
 ::-webkit-scrollbar-thumb{background:#1c2538;border-radius:3px}
 input,select,textarea,button{font-family:inherit;font-size:inherit}
 button{cursor:pointer;border:none;background:none}
+body{
+  overflow-x:hidden;
+}
 
+*{
+  max-width:100%;
+}
 :root{
   --bg:#05080f;
   --s1:#090d1a;
@@ -100,7 +106,21 @@ select.inp{cursor:pointer}
 .btn-icon:hover{background:rgba(255,255,255,0.08);color:var(--tx)}
 .save-log-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:11px;background:linear-gradient(135deg,var(--vi),#4f46e5);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(124,58,237,0.38);transition:all 0.2s}
 .save-log-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,0.5)}
+@media (max-width:768px){
+  button,
+  .btn,
+  .nav-item,
+  .filter-pill,
+  .mode-btn,
+  .sw-ctrl-btn{
+    min-height:44px;
+  }
 
+  .inp{
+    min-height:44px;
+    font-size:16px; /* prevents iOS zoom */
+  }
+}
 /* GRIDS */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
@@ -376,6 +396,157 @@ select.inp{cursor:pointer}
 
 #stopwatch-panel:fullscreen #sw-display {
   font-size: 6rem;
+}
+  /* =========================
+   MOBILE OPTIMIZATION PATCH
+   ========================= */
+@media (max-width: 768px){
+
+  html,body{
+    overflow:auto;
+    height:auto;
+  }
+
+  .shell{
+    display:block;
+    height:auto;
+  }
+
+  /* Sidebar becomes horizontal top nav */
+  .sidebar{
+    width:100%;
+    border-right:none;
+    border-bottom:1px solid var(--b1);
+    position:sticky;
+    top:0;
+    z-index:1000;
+    max-height:none;
+  }
+
+  .sb-nav{
+    display:flex;
+    overflow-x:auto;
+    gap:6px;
+    padding:10px;
+    scrollbar-width:none;
+  }
+
+  .sb-nav::-webkit-scrollbar{
+    display:none;
+  }
+
+  .nav-label{
+    display:none;
+  }
+
+  .nav-item{
+    min-width:max-content;
+    white-space:nowrap;
+    margin-bottom:0;
+  }
+
+  .sb-bottom{
+    display:none;
+  }
+
+  /* Main layout */
+  .main{
+    overflow:visible;
+  }
+
+  .page{
+    padding:16px 14px 28px;
+  }
+
+  /* All grids collapse */
+  .grid-2,
+  .grid-3,
+  .stat-grid,
+  .analytics-layout,
+  .neet-feature-grid,
+  .timer-layout,
+  .glance-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Cards spacing */
+  .card,
+  .timer-card,
+  .sw-section-card{
+    padding:14px;
+    border-radius:14px;
+  }
+
+  /* Text scaling */
+  .page-title{
+    font-size:20px;
+  }
+
+  .stat-val{
+    font-size:22px;
+  }
+
+  .sw-display-big{
+    font-size:2.2rem;
+  }
+
+  .tc-time{
+    font-size:1.8rem;
+  }
+
+  /* Timer circle smaller */
+  .timer-circle{
+    width:150px;
+    height:150px;
+    margin:auto;
+  }
+
+  /* Daily task form stack */
+  .add-task-form > div,
+  .form-row{
+    grid-template-columns:1fr !important;
+    display:grid !important;
+  }
+
+  /* Home topbar stack */
+  .home-topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  /* Buttons full width where needed */
+  .save-log-btn,
+  .btn-play{
+    width:100%;
+    justify-content:center;
+  }
+
+  /* Calendar improvements */
+  .cal-cell{
+    font-size:10px;
+    border-radius:7px;
+  }
+
+  /* Table responsiveness */
+  .planner-table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+  /* Modal width */
+  .modal-box,
+  .transfer-modal-box{
+    width:95%;
+    padding:18px;
+  }
+
+  /* Fix oversized streak widget */
+  .streak-widget,
+  .countdown-widget{
+    padding:12px;
+  }
 }
 </style>
 </head>
